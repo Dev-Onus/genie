@@ -15,6 +15,13 @@ pub(crate) enum CliOptions {
     None,
 }
 
+fn create_migration_command() -> Command {
+    Command::new("migrate")
+        .arg_required_else_help(true)
+        .subcommand(create_ejs_to_scss_subcommand())
+        .subcommand(create_legacy_to_latest_subcommand())
+}
+
 fn create_ejs_to_scss_subcommand() -> Command {
     Command::new("ejs-scss")
         .arg_required_else_help(true)
