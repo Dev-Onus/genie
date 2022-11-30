@@ -23,3 +23,11 @@ pub(crate) enum MigrationPathMetaData {
     Error(String),
     None,
 }
+
+#[derive(Debug, Clone)]
+pub(crate) struct MigrationOptions {
+    command: MigrationType,
+    input: MigrationPathMetaData,
+    output: MigrationPathMetaData,
+    alias: MigrationImportAliasType,
+}
