@@ -1,9 +1,6 @@
-use clap::{Arg, ArgAction};
+use clap::{Arg, ArgAction, Command};
 
-
-use crate::migration::{
-    MigrationOptions,
-};
+use crate::migration::MigrationOptions;
 
 #[derive(Debug, Clone)]
 enum PathType {
@@ -18,6 +15,13 @@ pub(crate) enum CliOptions {
     None,
 }
 
+fn create_ejs_to_scss_subcommand() -> Command {
+    Command::new("ejs-scss")
+        .arg_required_else_help(true)
+        .arg(create_input_argument())
+        .arg(create_output_argument())
+        .arg(create_js_alias_argument())
+}
 
 fn create_input_argument() -> Arg {
     Arg::new("input")
