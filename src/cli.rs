@@ -15,6 +15,15 @@ pub(crate) enum CliOptions {
     None,
 }
 
+fn build_command_line() -> Command {
+    Command::new("genie")
+        .about("Command line tool to migrate code in your react project")
+        .version("0.0.1")
+        .arg_required_else_help(true)
+        .subcommand_required(true)
+        .subcommand(create_migration_command())
+}
+
 fn create_migration_command() -> Command {
     Command::new("migrate")
         .arg_required_else_help(true)
