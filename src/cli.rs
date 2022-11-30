@@ -1,6 +1,7 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, fs};
 
 use clap::{Arg, ArgAction, Command};
+use serde_json::Value;
 
 use crate::migration::{MigrationOptions, MigrationPathMetaData};
 
@@ -15,6 +16,13 @@ pub(crate) enum CliOptions {
     Migration(MigrationOptions),
     Error(String),
     None,
+}
+
+fn get_js_config_value_from_path(jsc: PathBuf) -> Value {
+    let data = fs::read_to_string(jsc).unwrap_or_else(|_| String::from("{}"));
+    let v: Value = serde_json::from_str(&data).unwrap();
+    // dbg!(&v);
+    v["compilerOptions"]["paths"].clone()
 }
 
 fn check_if_path_exists(given_path: Option<&String>, path_type: PathType) -> MigrationPathMetaData {
