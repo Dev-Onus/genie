@@ -18,6 +18,16 @@ pub(crate) enum CliOptions {
     None,
 }
 
+
+fn create_input_argument() -> Arg {
+    Arg::new("input")
+        .short('I')
+        .long("input-file")
+        .action(ArgAction::Set)
+        .help("entry file of the repo")
+        .value_name("FILE|DIRECTORY")
+}
+
 fn create_js_alias_argument() -> Arg {
     Arg::new("js_alias")
         .short('A')
