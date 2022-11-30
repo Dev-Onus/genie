@@ -15,3 +15,11 @@ pub(crate) enum MigrationImportAliasType {
     JavaScript(Value, PathBuf),
     None(PathBuf),
 }
+
+#[derive(Debug, Clone)]
+pub(crate) enum MigrationPathMetaData {
+    File { path: PathBuf, is_file: bool },
+    Directory { path: PathBuf, is_directory: bool },
+    Error(String),
+    None,
+}
