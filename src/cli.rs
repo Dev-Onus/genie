@@ -3,7 +3,7 @@ use std::{path::{PathBuf, Path}, fs};
 use clap::{Arg, ArgAction, Command};
 use serde_json::Value;
 
-use crate::migration::{MigrationOptions, MigrationPathMetaData};
+use crate::migration::{MigrationOptions, MigrationPathMetaData, MigrationImportAliasType};
 
 #[derive(Debug, Clone)]
 enum PathType {
@@ -16,6 +16,18 @@ pub(crate) enum CliOptions {
     Migration(MigrationOptions),
     Error(String),
     None,
+}
+
+fn get_root_directory(path: &PathBuf) -> MigrationImportAliasType {
+    let given_path = path.as_path();
+    let is_file = given_path.is_file();
+
+    if let Some(root_directory) = search_package_json(given_path, is_file) {
+        let _project_directory = root_directory.clone();
+        MigrationImportAliasType::None(root_directory)
+    } else {
+        MigrationImportAliasType::None(Default::default())
+    }
 }
 
 fn search_package_json(given_path: &Path, is_file: bool) -> Option<PathBuf> {
