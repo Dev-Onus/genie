@@ -28,6 +28,15 @@ fn create_input_argument() -> Arg {
         .value_name("FILE|DIRECTORY")
 }
 
+fn create_output_argument() -> Arg {
+    Arg::new("output")
+        .short('O')
+        .long("output-file")
+        .action(ArgAction::Set)
+        .help("target file to be generated")
+        .value_name("FILE|DIRECTORY")
+}
+
 fn create_js_alias_argument() -> Arg {
     Arg::new("js_alias")
         .short('A')
