@@ -1,4 +1,4 @@
-use std::{path::PathBuf, fs};
+use std::{path::{PathBuf, Path}, fs};
 
 use clap::{Arg, ArgAction, Command};
 use serde_json::Value;
@@ -16,6 +16,41 @@ pub(crate) enum CliOptions {
     Migration(MigrationOptions),
     Error(String),
     None,
+}
+
+fn search_package_json(given_path: &Path, is_file: bool) -> Option<PathBuf> {
+    let given_directory = if is_file {
+        given_path.parent().unwrap()
+    } else {
+        given_path
+    };
+
+    // dbg!(&given_path);
+
+    let mut project_directory = Some(given_directory.clone());
+    let mut found_root = false;
+
+    while let Some(current_path) = project_directory {
+        // dbg!(current_path);
+        if current_path.join("package.json").try_exists().unwrap() {
+            // project_directory = current_path;
+            found_root = true;
+            break
+        } else {
+            project_directory = current_path.parent()
+        }
+    }
+
+    // dbg!(&project_directory);
+
+    if found_root {
+        match project_directory {
+            Some(path) => Some(path.to_path_buf()),
+            None => None,
+        }
+    } else {
+        None
+    }
 }
 
 fn get_js_config_value_from_path(jsc: PathBuf) -> Value {
