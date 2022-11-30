@@ -15,6 +15,10 @@ pub(crate) enum CliOptions {
     None,
 }
 
+fn get_cli_arguments_matches() -> clap::ArgMatches {
+    build_command_line().get_matches()
+}
+
 fn build_command_line() -> Command {
     Command::new("genie")
         .about("Command line tool to migrate code in your react project")
