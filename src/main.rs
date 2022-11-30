@@ -1,3 +1,5 @@
+mod cli;
+
 fn execute_code_no_return() {
     print!("Hello, ");
 }
