@@ -31,3 +31,14 @@ pub(crate) struct MigrationOptions {
     output: MigrationPathMetaData,
     alias: MigrationImportAliasType,
 }
+
+impl MigrationOptions {
+    pub(crate) fn new(c: MigrationType, i: MigrationPathMetaData, o: MigrationPathMetaData, a: MigrationImportAliasType) -> MigrationOptions {
+        MigrationOptions {
+            command: c,
+            input: i,
+            output: o,
+            alias: a,
+        }
+    }
+}
