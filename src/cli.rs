@@ -1,6 +1,8 @@
+use std::path::PathBuf;
+
 use clap::{Arg, ArgAction, Command};
 
-use crate::migration::MigrationOptions;
+use crate::migration::{MigrationOptions, MigrationPathMetaData};
 
 #[derive(Debug, Clone)]
 enum PathType {
@@ -13,6 +15,48 @@ pub(crate) enum CliOptions {
     Migration(MigrationOptions),
     Error(String),
     None,
+}
+
+fn check_if_path_exists(given_path: Option<&String>, path_type: PathType) -> MigrationPathMetaData {
+    if let Some(output_file) = given_path {
+        let path = PathBuf::from(&output_file);
+
+        match path.try_exists() {
+            Ok(is_exists) => {
+                if is_exists {
+                    if path.is_file() {
+                        MigrationPathMetaData::File {
+                            path: path,
+                            is_file: true,
+                        }
+                    } else if path.is_dir() {
+                        MigrationPathMetaData::Directory {
+                            path: path,
+                            is_directory: true,
+                        }
+                    } else {
+                        MigrationPathMetaData::None
+                    }
+                } else {
+                    let error_string = match path_type {
+                        PathType::Output => String::from(
+                            r#"output path is optional. While given it is expected to be a valid path. Remove output path if you want the input file to be rewritten."#,
+                        ),
+                        PathType::Input => String::from(
+                            r#"input path is not optional. try again by providing a valid system path"#,
+                        ),
+                    };
+
+                    MigrationPathMetaData::Error(error_string)
+                }
+            }
+            _ => MigrationPathMetaData::Error(String::from(
+                r#"Unable to verify if the given file exists, please try again."#,
+            )),
+        }
+    } else {
+        MigrationPathMetaData::None
+    }
 }
 
 fn get_cli_arguments_matches() -> clap::ArgMatches {
