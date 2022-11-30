@@ -13,6 +13,15 @@
 //  there is no support for custom scripts
 // "cargo add" is npm install "npm i" for rust.
 //  some of the cargo commands: "cargo run", "cargo add", "cargo new"
+
+// file structure:
+// -- src
+//     |-- main.rs
+// -- target
+//     |-- debug
+// -- .gitignore
+// -- cargo.toml
+// -- cargo.lock
 ```
 
 - basics of rust file structure
