@@ -1,4 +1,5 @@
 mod cli;
+mod migration;
 
 fn execute_code_no_return() {
     print!("Hello, ");
