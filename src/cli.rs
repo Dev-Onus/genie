@@ -23,6 +23,14 @@ fn create_ejs_to_scss_subcommand() -> Command {
         .arg(create_js_alias_argument())
 }
 
+fn create_legacy_to_latest_subcommand() -> Command {
+    Command::new("legacy")
+        .arg_required_else_help(true)
+        .arg(create_input_argument())
+        .arg(create_output_argument())
+        .arg(create_js_alias_argument())
+}
+
 fn create_input_argument() -> Arg {
     Arg::new("input")
         .short('I')
