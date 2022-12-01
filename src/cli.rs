@@ -18,6 +18,32 @@ pub(crate) enum CliOptions {
     None,
 }
 
+pub(crate) fn derive_options_from_cli_arguments() -> CliOptions {
+    let cli_params = get_cli_arguments_matches();
+
+    match cli_params.subcommand() {
+        Some(("migrate", migrate_matches)) => {
+            /*
+                Migrate requires its sub command to decide the migration process.
+            */
+            let migration_command = migrate_matches.subcommand();
+
+            match migration_command {
+                Some((command, es_matches)) => derive_cli_options(
+                    es_matches,
+                    if command == "ejs-scss" {
+                        MigrationType::EmotionToScss
+                    } else {
+                        MigrationType::LegacyToLatest
+                    },
+                ),
+                _ => CliOptions::None,
+            }
+        }
+        _ => CliOptions::None,
+    }
+}
+
 fn derive_cli_options(es_matches: &clap::ArgMatches, c: MigrationType) -> CliOptions {
     if es_matches.contains_id("input") {
         let js_alias = es_matches.get_flag("js_alias");
