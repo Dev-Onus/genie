@@ -18,6 +18,18 @@ pub(crate) enum CliOptions {
     None,
 }
 
+fn validate_js_config_alias_presence(meta: &MigrationPathMetaData) -> MigrationImportAliasType {
+    match meta {
+        MigrationPathMetaData::Directory { path, is_directory } => {
+            get_alias_data(path, !is_directory)
+        }
+        MigrationPathMetaData::File { path, is_file } => {
+            get_alias_data(path, is_file.clone())
+        }
+        _ => MigrationImportAliasType::None(Default::default()),
+    }
+}
+
 fn get_alias_data(path: &PathBuf, is_file: bool) -> MigrationImportAliasType {
     if let Some(root_directory) = search_package_json(path.as_path(), is_file) {
         let _project_directory = root_directory.clone();
