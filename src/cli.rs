@@ -3,7 +3,7 @@ use std::{path::{PathBuf, Path}, fs};
 use clap::{Arg, ArgAction, Command};
 use serde_json::Value;
 
-use crate::migration::{MigrationOptions, MigrationPathMetaData, MigrationImportAliasType};
+use crate::migration::{MigrationOptions, MigrationPathMetaData, MigrationImportAliasType, MigrationType};
 
 #[derive(Debug, Clone)]
 enum PathType {
@@ -16,6 +16,27 @@ pub(crate) enum CliOptions {
     Migration(MigrationOptions),
     Error(String),
     None,
+}
+
+fn derive_cli_options(es_matches: &clap::ArgMatches, c: MigrationType) -> CliOptions {
+    if es_matches.contains_id("input") {
+        let js_alias = es_matches.get_flag("js_alias");
+        let i = check_if_path_exists(es_matches.get_one::<String>("input"), PathType::Input);
+        let o = check_if_path_exists(es_matches.get_one::<String>("output"), PathType::Output);
+        let a: MigrationImportAliasType = if js_alias {
+            validate_js_config_alias_presence(&i)
+        } else {
+            validate_js_config_alias_presence(&i)
+        };
+
+        match i {
+            MigrationPathMetaData::Error(msg) => CliOptions::Error(msg),
+            MigrationPathMetaData::None => CliOptions::None,
+            _ => CliOptions::Migration(MigrationOptions::new(c, i, o, a)),
+        }
+    } else {
+        CliOptions::None
+    }
 }
 
 fn validate_js_config_alias_presence(meta: &MigrationPathMetaData) -> MigrationImportAliasType {
