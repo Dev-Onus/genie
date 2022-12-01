@@ -18,6 +18,30 @@ pub(crate) enum CliOptions {
     None,
 }
 
+fn get_alias_data(path: &PathBuf, is_file: bool) -> MigrationImportAliasType {
+    if let Some(root_directory) = search_package_json(path.as_path(), is_file) {
+        let _project_directory = root_directory.clone();
+        // dbg!(&root_directory);
+
+        let jsc = root_directory.join("jsconfig.json");
+        let tsc = root_directory.join("tsconfig.json");
+        let is_jsc_exists = jsc.try_exists().unwrap();
+        let is_tsc_exists = tsc.try_exists().unwrap();
+
+        // dbg!((is_jsc_exists, &jsc));
+
+        if is_jsc_exists {
+            MigrationImportAliasType::JavaScript(get_js_config_value_from_path(jsc), root_directory)
+        } else if is_tsc_exists {
+            MigrationImportAliasType::TypeScript(get_js_config_value_from_path(tsc), root_directory)
+        } else {
+            MigrationImportAliasType::None(root_directory)
+        }
+    } else {
+        MigrationImportAliasType::None(Default::default())
+    }
+}
+
 fn get_root_directory(path: &PathBuf) -> MigrationImportAliasType {
     let given_path = path.as_path();
     let is_file = given_path.is_file();
