@@ -1,15 +1,20 @@
+use crate::cli::{derive_options_from_cli_arguments, CliOptions};
+
 mod cli;
 mod migration;
 
-fn execute_code_no_return() {
-    print!("Hello, ");
-}
+fn main() -> std::io::Result<()> {
+    let options: CliOptions = derive_options_from_cli_arguments();
+    dbg!(&options);
 
-fn execute_code_return_string(name: String) -> String {
-    format!("{}", name)
-}
+    match options {
+        CliOptions::Migration(_m_opts) => {
+            println!(
+                "\n\n\n********************************\n********START MIGRATION*********\n********************************\n"
+            )
+        }
+        _ => unreachable!(),
+    }
 
-fn main() {
-    execute_code_no_return();
-    print!("{}\n", execute_code_return_string(String::from("Akash")));
+    Ok(())
 }
