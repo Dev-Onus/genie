@@ -145,3 +145,39 @@ let a = 5;
 let str = format!("Hello Yogesh {}", a);
 println!("Hello World {}", str);
 ```
+- create a value from a struct or enum
+
+```javascript
+class Color {
+  constructor(red, yellow) {
+    this.red = red;
+    this.yellow = yellow;
+  }
+}
+
+let color1 = new Color("Red", "Yellow");
+console.log(`This is color ${color1.red} , This is color ${color1.yellow}`)
+
+```
+
+->
+
+```rust
+#[derive(Debug)]
+
+struct Color {
+    red: String,
+    yellow: String,
+}
+
+fn main() -> std::io::Result<()> {
+  let color1 = Color {
+        red: String::from("Red"),
+        yellow: String::from("Yellow"),
+    };
+    println!("This is {} color, This is {} color", color1.red, color1.yellow);
+    dbg!(color1);
+
+    Ok(())
+}
+```
